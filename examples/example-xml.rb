@@ -5,7 +5,7 @@ The RESTXML Ruby Response Library makes it easy to write RESTXML without having
 to touch XML. Error checking is built in to help preventing invalid markup.
 
 USAGE:
-To create RESTXML, you will make RESTXML Grammar.
+To create RESTXML, you will make RESTXML Elements.
 Convenience methods are provided to simplify RESTXML creation.
 
 SUPPORTED GRAMMAR:
@@ -27,14 +27,18 @@ SUPPORTED GRAMMAR:
 # 1. Speak, Dial, and Play
 @r = Plivo::Response.new
 @r.append(Plivo::Speak.new("Hello World", :voice => "man", :loop => "10"))
-@r.append(Plivo::Dial.new("4155551212", :timeLimit => "45"))
+@g = Plivo::Dial.new(:timeLimit => "45")
+@g.append(Plivo::Number.new("4155551212"))
+@r.append(@g)
 @r.append(Plivo::Play.new("http://www.mp3.com"))
 puts @r.respond
 
 #<Response>
 #  <Speak voice="man" loop="10">Hello World</Speak>
 #  <Play>http://www.mp3.com</Play>
-#  <Dial timeLimit="45">4155551212</Dial>
+#  <Dial timeLimit="45">
+#    <Number>4155551212</Number>
+#  </Dial>
 #</Response>
 
 
