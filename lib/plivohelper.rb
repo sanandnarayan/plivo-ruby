@@ -336,7 +336,7 @@ module Plivo
   class Record
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    attributes :timeout, :finishOnKey, :maxLength, :playBeep, :format, :prefix, :filePath, :bothLegs
+    attributes :timeout, :finishOnKey, :maxLength, :playBeep, :fileFormat, :prefix, :filePath, :bothLegs
   end
 
   class Dial
@@ -373,7 +373,7 @@ module Plivo
   class Conference
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    attributes :muted, :enterSound, :exitSound, :startConferenceOnEnter, :endConferenceOnExit, :waitSound, :timeLimit, :hangupOnStar
+    attributes :muted, :enterSound, :exitSound, :startConferenceOnEnter, :endConferenceOnExit, :waitSound, :timeLimit, :hangupOnStar, :recordFilePath, :recordFileFormat, :recordFilePrefix
   end
 
   class PreAnswer
