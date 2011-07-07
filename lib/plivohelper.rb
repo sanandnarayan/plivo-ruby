@@ -390,7 +390,7 @@ module Plivo
   class PreAnswer
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    allowed_element :speak, :play, :getDigits, :wait
+    allowed_element :Speak, :Play, :GetDigits, :Wait, :GetSpeech
   end
 
   class Response
