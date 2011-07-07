@@ -280,6 +280,10 @@ module Plivo
       append Plivo::GetDigits.new(opts)
     end
 
+    def addGetSpeech(opts = {})
+      append Plivo::GetSpeech.new(opts)
+    end
+
     def addRecord(opts = {})
       append Plivo::Record.new(opts)
     end
@@ -330,6 +334,13 @@ module Plivo
     extend Plivo::Element::ClassMethods
     include Plivo::Element
     attributes :action, :method, :timeout, :finishOnKey, :numDigits, :retries, :playBeep, :validDigits, :invalidDigitsSound
+    allowed_element :play, :speak, :wait
+  end
+
+  class GetSpeech
+    extend Plivo::Element::ClassMethods
+    include Plivo::Element
+    attributes :action, :method, :timeout, :playBeep, :engine, :grammar
     allowed_element :play, :speak, :wait
   end
 
@@ -385,7 +396,7 @@ module Plivo
   class Response
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    allowed_element :Speak, :Play, :GetDigits, :Record, :Dial, :Redirect, :Wait, :Hangup, :PreAnswer, :Conference
+    allowed_element :Speak, :Play, :GetDigits, :Record, :Dial, :Redirect, :Wait, :Hangup, :PreAnswer, :Conference, :GetSpeech
   end
 
   # Plivo Utility function and Request Validation class
