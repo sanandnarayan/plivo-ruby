@@ -353,7 +353,7 @@ module Plivo
   class Dial
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    attributes :action, :method, :timeout, :hangupOnStar, :timeLimit, :callerId, :confirmSound, :confirmKey, :dialMusic
+    attributes :action, :method, :timeout, :hangupOnStar, :timeLimit, :callerId, :confirmSound, :confirmKey, :dialMusic, :redirect
     allowed_element :number
   end
 
@@ -384,7 +384,7 @@ module Plivo
   class Conference
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    attributes :muted, :enterSound, :exitSound, :startConferenceOnEnter, :endConferenceOnExit, :waitSound, :timeLimit, :hangupOnStar, :recordFilePath, :recordFileFormat, :recordFilename
+    attributes :muted, :enterSound, :exitSound, :startConferenceOnEnter, :endConferenceOnExit, :waitSound, :timeLimit, :hangupOnStar, :recordFilePath, :recordFileFormat, :recordFilename, :action, :method, :callbackUrl, :callbackMethod, :digitsMatch
   end
 
   class PreAnswer
