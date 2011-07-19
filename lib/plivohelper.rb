@@ -98,7 +98,92 @@ module Plivo
       return request(path, method, call_params)
     end
 
-    #enocde the parameters into a URL friendly string
+        # REST Conference Mute helper
+    def conference_mute(call_params)
+      path = '/v0.1/ConferenceMute/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
+    # REST Conference Unmute helper
+    def conference_unmute(call_params)
+      path = '/v0.1/ConferenceUnmute/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
+    # REST Conference Kick helper
+    def conference_kick(call_params)
+      path = '/v0.1/ConferenceKick/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
+    # REST Conference Hangup helper
+    def conference_hangup(call_params)
+      path = '/v0.1/ConferenceHangup/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
+    # REST Conference Deaf helper
+    def conference_deaf(call_params)
+      path = '/v0.1/ConferenceDeaf/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
+    # REST Conference Undeaf helper
+    def conference_undeaf(call_params)
+      path = '/v0.1/ConferenceUndeaf/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
+    # REST Conference RecordStart helper
+    def conference_record_start(call_params)
+      path = '/v0.1/ConferenceRecordStart/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
+    # REST Conference RecordStop
+    def conference_record_stop(call_params)
+      path = '/v0.1/ConferenceRecordStop/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
+    # REST Conference Play helper
+    def conference_play(call_params)
+      path = '/v0.1/ConferencePlay/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
+    # REST Conference Speak helper
+    def conference_speak(call_params)
+      path = '/v0.1/ConferenceSpeak/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
+    # REST Conference List Helper
+    def conference_list(call_params)
+      path = '/v0.1/ConferenceList/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
+    # REST Conference List Members Helper
+    def conference_list_members(call_params)
+      path = '/v0.1/ConferenceListMembers/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
+
+    #encode the parameters into a URL friendly string
     #
     #@param [Hash] URL key / values
     #@return [String] Encoded URL
