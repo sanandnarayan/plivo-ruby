@@ -98,6 +98,20 @@ module Plivo
       return request(path, method, call_params)
     end
 
+    # REST RecordStart helper
+    def record_start(call_params)
+      path = '/v0.1/RecordStart/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
+    # REST RecordStop
+    def record_stop(call_params)
+      path = '/v0.1/RecordStop/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
         # REST Conference Mute helper
     def conference_mute(call_params)
       path = '/v0.1/ConferenceMute/'
