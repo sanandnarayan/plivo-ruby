@@ -49,6 +49,13 @@ module Plivo
       return fetch(uri, vars, method)
     end
 
+    # REST Reload Plivo Config Helper
+    def reload_config(call_params)
+      path = '/v0.1/ReloadConfig/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
     # REST Call Helper
     def call(call_params)
       path = '/v0.1/Call/'
