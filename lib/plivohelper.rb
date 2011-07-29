@@ -70,6 +70,13 @@ module Plivo
       return request(path, method, call_params)
     end
 
+    # REST Group Call Helper
+    def group_call(call_params)
+      path = '/v0.1/GroupCall/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
     # REST Transfer Live Call Helper
     def transfer_call(call_params)
       path = '/v0.1/TransferCall/'
