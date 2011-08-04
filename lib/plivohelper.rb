@@ -84,18 +84,18 @@ module Plivo
       return request(path, method, call_params)
     end
 
-    # REST Hangup Live Call Helper
-    def hangup_call(call_params)
-      path = '/v0.1/HangupCall/'
-      method = 'POST'
-      return request(path, method, call_params)
-    end
-
     # REST Hangup All Live Calls Helper
     def hangup_all_calls()
       path = '/v0.1/HangupAllCalls/'
       method = 'POST'
       return request(path, method)
+    end
+
+    # REST Hangup Live Call Helper
+    def hangup_call(call_params)
+      path = '/v0.1/HangupCall/'
+      method = 'POST'
+      return request(path, method, call_params)
     end
 
     # REST Schedule Hangup Helper
@@ -126,7 +126,28 @@ module Plivo
       return request(path, method, call_params)
     end
 
-        # REST Conference Mute helper
+    # REST Play something on a Call Helper
+    def play(call_params)
+      path = '/v0.1/Play/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
+    # REST Schedule Play Helper
+    def schedule_play(call_params)
+      path = '/v0.1/SchedulePlay/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
+    # REST Cancel a Scheduled Play Helper
+    def cancel_scheduled_play(call_params)
+      path = '/v0.1/CancelScheduledPlay/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
+    # REST Conference Mute helper
     def conference_mute(call_params)
       path = '/v0.1/ConferenceMute/'
       method = 'POST'
