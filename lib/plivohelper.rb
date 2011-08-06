@@ -487,7 +487,7 @@ module Plivo
   class Dial
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    attributes :action, :method, :timeout, :hangupOnStar, :timeLimit, :callerId, :confirmSound, :confirmKey, :dialMusic, :redirect, :callbackUrl, :callbackMethod
+    attributes :action, :method, :timeout, :hangupOnStar, :timeLimit, :callerId, :confirmSound, :confirmKey, :dialMusic, :redirect, :callbackUrl, :callbackMethod, :digitsMatch
     allowed_element :number
   end
 
