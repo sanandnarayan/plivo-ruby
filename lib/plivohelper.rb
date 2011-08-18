@@ -500,7 +500,7 @@ module Plivo
   class Wait
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    attributes :length, :transferEnabled
+    attributes :length
   end
 
   class Hangup
