@@ -134,7 +134,7 @@ module Plivo
     end
 
     # REST PlayStop on a Call Helper
-    def play(call_params)
+    def play_stop(call_params)
       path = '/v0.1/PlayStop/'
       method = 'POST'
       return request(path, method, call_params)
