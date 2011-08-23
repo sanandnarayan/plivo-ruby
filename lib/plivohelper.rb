@@ -154,6 +154,20 @@ module Plivo
       return request(path, method, call_params)
     end
 
+    # REST Add soundtouch audio effects to a Call Helper
+    def sound_touch(call_params)
+      path = '/v0.1/SoundTouch/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
+    # REST Remove soundtouch audio effects on a Call Helper
+    def sound_touch_stop(call_params)
+      path = '/v0.1/SoundTouchStop/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
     # REST Conference Mute helper
     def conference_mute(call_params)
       path = '/v0.1/ConferenceMute/'
