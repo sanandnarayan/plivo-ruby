@@ -133,6 +133,13 @@ module Plivo
       return request(path, method, call_params)
     end
 
+    # REST PlayStop on a Call Helper
+    def play(call_params)
+      path = '/v0.1/PlayStop/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
     # REST Schedule Play Helper
     def schedule_play(call_params)
       path = '/v0.1/SchedulePlay/'
@@ -430,6 +437,10 @@ module Plivo
       append Plivo::Redirect.new(url, opts)
     end
 
+    def addSIPTransfer(url = nil, opts = {})
+      append Plivo::SIPTransfer.new(url, opts)
+    end
+
     def addWait(opts = {})
       append Plivo::Wait.new(opts)
     end
@@ -494,6 +505,11 @@ module Plivo
   class Redirect
     extend Plivo::Element::ClassMethods
     include Plivo::Element
+  end
+
+  class SIPTransfer
+    extend Plivo::Element::ClassMethods
+    include Plivo::Element
     attributes :method
   end
 
@@ -524,13 +540,13 @@ module Plivo
   class PreAnswer
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    allowed_element :Speak, :Play, :GetDigits, :Wait, :GetSpeech
+    allowed_element :Speak, :Play, :GetDigits, :Wait, :GetSpeech, :SIPTransfer, :Redirect
   end
 
   class Response
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    allowed_element :Speak, :Play, :GetDigits, :Record, :Dial, :Redirect, :Wait, :Hangup, :PreAnswer, :Conference, :GetSpeech
+    allowed_element :Speak, :Play, :GetDigits, :Record, :Dial, :Redirect, :Wait, :Hangup, :PreAnswer, :Conference, :GetSpeech, :SIPTransfer
   end
 
   # Plivo Utility function and Request Validation class
