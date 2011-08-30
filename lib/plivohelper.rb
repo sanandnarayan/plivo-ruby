@@ -168,6 +168,13 @@ module Plivo
       return request(path, method, call_params)
     end
 
+    # REST Send digits to a Call Helper
+    def send_digits(call_params)
+      path = '/v0.1/SendDigits/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
     # REST Conference Mute helper
     def conference_mute(call_params)
       path = '/v0.1/ConferenceMute/'
