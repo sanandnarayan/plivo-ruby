@@ -549,7 +549,7 @@ module Plivo
   class Number
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    attributes :sendDigits, :gateways, :gatewayCodecs, :gatewayTimeouts, :gatewayRetries, :extraDialString
+    attributes :sendDigits, :sendOnPreanswer, :gateways, :gatewayCodecs, :gatewayTimeouts, :gatewayRetries, :extraDialString
   end
 
   class Conference
