@@ -555,7 +555,7 @@ module Plivo
   class Conference
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    attributes :muted, :enterSound, :exitSound, :startConferenceOnEnter, :endConferenceOnExit, :waitSound, :timeLimit, :hangupOnStar, :recordFilePath, :recordFileFormat, :recordFileName, :action, :method, :callbackUrl, :callbackMethod, :digitsMatch, :stayAlone, :speakEvent
+    attributes :muted, :enterSound, :exitSound, :startConferenceOnEnter, :endConferenceOnExit, :waitSound, :timeLimit, :hangupOnStar, :recordFilePath, :recordFileFormat, :recordFileName, :action, :method, :callbackUrl, :callbackMethod, :digitsMatch, :stayAlone, :floorEvent
   end
 
   class PreAnswer
