@@ -56,6 +56,13 @@ module Plivo
       return request(path, method, call_params)
     end
 
+    # REST Reload Plivo Cache Config Helper
+    def reload_config(call_params)
+      path = '/v0.1/ReloadCacheConfig/'
+      method = 'POST'
+      return request(path, method, call_params)
+    end
+
     # REST Call Helper
     def call(call_params)
       path = '/v0.1/Call/'
