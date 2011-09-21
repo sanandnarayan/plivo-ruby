@@ -490,7 +490,7 @@ module Plivo
   class Speak
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    attributes :voice, :language, :loop, :engine, :type, :method
+    attributes :voice, :language, :loop
   end
 
   class Play
@@ -509,7 +509,7 @@ module Plivo
   class Record
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    attributes :action, :method, :timeout, :finishOnKey, :maxLength, :playBeep, :fileFormat, :fileName, :filePath, :bothLegs
+    attributes :action, :method, :timeout, :finishOnKey, :maxLength, :playBeep, :bothLegs
   end
 
   class Dial
@@ -545,13 +545,13 @@ module Plivo
   class Number
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    attributes :sendDigits, :sendOnPreanswer, :gateways, :gatewayCodecs, :gatewayTimeouts, :gatewayRetries, :extraDialString
+    attributes :sendDigits, :sendOnPreanswer
   end
 
   class Conference
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    attributes :muted, :enterSound, :exitSound, :startConferenceOnEnter, :endConferenceOnExit, :waitSound, :timeLimit, :hangupOnStar, :recordFilePath, :recordFileFormat, :recordFileName, :action, :method, :callbackUrl, :callbackMethod, :digitsMatch, :stayAlone, :floorEvent
+    attributes :muted, :enterSound, :exitSound, :startConferenceOnEnter, :endConferenceOnExit, :waitSound, :timeLimit, :hangupOnStar, :record, :action, :method, :callbackUrl, :callbackMethod, :digitsMatch, :stayAlone, :floorEvent
   end
 
   class PreAnswer
