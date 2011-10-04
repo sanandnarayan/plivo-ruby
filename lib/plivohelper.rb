@@ -520,7 +520,7 @@ module Plivo
   class Record
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    attributes :action, :method, :timeout, :finishOnKey, :maxLength, :playBeep, :fileFormat, :fileName, :filePath, :bothLegs
+    attributes :action, :method, :timeout, :finishOnKey, :maxLength, :playBeep, :fileFormat, :fileName, :filePath, :bothLegs, :record
   end
 
   class Dial
