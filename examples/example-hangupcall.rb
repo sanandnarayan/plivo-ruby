@@ -1,17 +1,12 @@
-require 'plivohelper'
+require 'plivocldhelper'
 
-#URL of the Plivo REST service
-REST_API_URL = 'http://127.0.0.1:8088'
 
 # Sid and AuthToken
 SID = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
 AUTH_TOKEN = 'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY'
 
-#Define Channel Variable - http://wiki.freeswitch.org/wiki/Channel_Variables
-originate_dial_string = "bridge_early_media=true,hangup_after_bridge=true"
-
 # Create a REST object
-plivo = Plivo::Rest.new(REST_API_URL, SID, AUTH_TOKEN)
+plivo = Plivo::Rest.new(SID, AUTH_TOKEN)
 
 # Hangup a call using a HTTP POST
 hangup_call_params = {

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'plivohelper'
+require 'plivocldhelper'
 
 
 # This is the signature we expect for the key, url, and params below

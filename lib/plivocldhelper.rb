@@ -16,10 +16,11 @@ module Plivo
 
     #@param [String, String] Your Plivo SID/ID and Auth Token
     #@return [Object] Rest object
-    def initialize(url, id, token)
+    def initialize(id, token, url='http://testcloud.plivo.com:8085/', version='v1')
       @id = id
       @token = token
       @url = url
+      @version = version
     end
 
     #sends a request and gets a response from the Plivo REST API
@@ -49,219 +50,191 @@ module Plivo
       return fetch(uri, vars, method)
     end
 
-    # REST Reload Plivo Config Helper
-    def reload_config(call_params)
-      path = '/v0.1/ReloadConfig/'
-      method = 'POST'
-      return request(path, method, call_params)
-    end
-
-    # REST Reload Plivo Cache Config Helper
-    def reload_cache_config(call_params)
-      path = '/v0.1/ReloadCacheConfig/'
-      method = 'POST'
-      return request(path, method, call_params)
-    end
-
     # REST Call Helper
     def call(call_params)
-      path = '/v0.1/Call/'
+      path = @version + '/Call/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Bulk Call Helper
     def bulk_call(call_params)
-      path = '/v0.1/BulkCall/'
+      path = @version + '/Call/Bulk/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Group Call Helper
     def group_call(call_params)
-      path = '/v0.1/GroupCall/'
+      path = @version + '/Call/Group/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Transfer Live Call Helper
     def transfer_call(call_params)
-      path = '/v0.1/TransferCall/'
+      path = @version + '/Call/Transfer/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Hangup All Live Calls Helper
     def hangup_all_calls()
-      path = '/v0.1/HangupAllCalls/'
+      path = @version + '/Call/Hangup/All/'
       method = 'POST'
       return request(path, method)
     end
 
     # REST Hangup Live Call Helper
     def hangup_call(call_params)
-      path = '/v0.1/HangupCall/'
+      path = @version + '/Call/Hangup/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Schedule Hangup Helper
     def schedule_hangup(call_params)
-      path = '/v0.1/ScheduleHangup/'
+      path = @version + '/Call/Hangup/Schedule/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Cancel a Scheduled Hangup Helper
     def cancel_scheduled_hangup(call_params)
-      path = '/v0.1/CancelScheduledHangup/'
+      path = @version + '/Call/Hangup/Schedule/Cancel/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST RecordStart helper
     def record_start(call_params)
-      path = '/v0.1/RecordStart/'
+      path = @version + '/Call/Record/Start/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST RecordStop
     def record_stop(call_params)
-      path = '/v0.1/RecordStop/'
+      path = @version + '/Call/Record/Stop/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Play something on a Call Helper
     def play(call_params)
-      path = '/v0.1/Play/'
+      path = @version + '/Call/Play/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST PlayStop on a Call Helper
     def play_stop(call_params)
-      path = '/v0.1/PlayStop/'
+      path = @version + '/Call/Play/Stop/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Schedule Play Helper
     def schedule_play(call_params)
-      path = '/v0.1/SchedulePlay/'
+      path = @version + '/Call/Play/Schedule/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Cancel a Scheduled Play Helper
     def cancel_scheduled_play(call_params)
-      path = '/v0.1/CancelScheduledPlay/'
-      method = 'POST'
-      return request(path, method, call_params)
-    end
-
-    # REST Add soundtouch audio effects to a Call Helper
-    def sound_touch(call_params)
-      path = '/v0.1/SoundTouch/'
-      method = 'POST'
-      return request(path, method, call_params)
-    end
-
-    # REST Remove soundtouch audio effects on a Call Helper
-    def sound_touch_stop(call_params)
-      path = '/v0.1/SoundTouchStop/'
+      path = @version + '/Call/Play/Schedule/Cancel/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Send digits to a Call Helper
     def send_digits(call_params)
-      path = '/v0.1/SendDigits/'
+      path = @version + '/Call/SendDigits/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Conference Mute helper
     def conference_mute(call_params)
-      path = '/v0.1/ConferenceMute/'
+      path = @version + '/Conference/Member/Mute/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Conference Unmute helper
     def conference_unmute(call_params)
-      path = '/v0.1/ConferenceUnmute/'
+      path = @version + '/Conference/Member/Unmute/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Conference Kick helper
     def conference_kick(call_params)
-      path = '/v0.1/ConferenceKick/'
+      path = @version + '/Conference/Member/Kick/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Conference Hangup helper
     def conference_hangup(call_params)
-      path = '/v0.1/ConferenceHangup/'
+      path = @version + '/Conference/Member/Hangup/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Conference Deaf helper
     def conference_deaf(call_params)
-      path = '/v0.1/ConferenceDeaf/'
+      path = @version + '/Conference/Member/Deaf/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Conference Undeaf helper
     def conference_undeaf(call_params)
-      path = '/v0.1/ConferenceUndeaf/'
+      path = @version + '/Conference/Member/Undeaf/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Conference RecordStart helper
     def conference_record_start(call_params)
-      path = '/v0.1/ConferenceRecordStart/'
+      path = @version + '/Conference/Record/Start/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Conference RecordStop
     def conference_record_stop(call_params)
-      path = '/v0.1/ConferenceRecordStop/'
+      path = @version + '/Conference/Record/Stop/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Conference Play helper
     def conference_play(call_params)
-      path = '/v0.1/ConferencePlay/'
+      path = @version + '/Conference/Play/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Conference Speak helper
     def conference_speak(call_params)
-      path = '/v0.1/ConferenceSpeak/'
+      path = @version + '/Conference/Speak/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Conference List Helper
     def conference_list(call_params)
-      path = '/v0.1/ConferenceList/'
+      path = @version + '/Conference/List/'
       method = 'POST'
       return request(path, method, call_params)
     end
 
     # REST Conference List Members Helper
     def conference_list_members(call_params)
-      path = '/v0.1/ConferenceListMembers/'
+      path = @version + '/Conference/Member/List/'
       method = 'POST'
       return request(path, method, call_params)
     end
@@ -461,10 +434,6 @@ module Plivo
       append Plivo::Redirect.new(url, opts)
     end
 
-    def addSIPTransfer(url = nil, opts = {})
-      append Plivo::SIPTransfer.new(url, opts)
-    end
-
     def addWait(opts = {})
       append Plivo::Wait.new(opts)
     end
@@ -524,12 +493,6 @@ module Plivo
     include Plivo::Element
   end
 
-  class SIPTransfer
-    extend Plivo::Element::ClassMethods
-    include Plivo::Element
-    attributes :method
-  end
-
   class Wait
     extend Plivo::Element::ClassMethods
     include Plivo::Element
@@ -557,13 +520,13 @@ module Plivo
   class PreAnswer
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    allowed_element :Speak, :Play, :GetDigits, :Wait, :SIPTransfer, :Redirect
+    allowed_element :Speak, :Play, :GetDigits, :Wait, :Redirect
   end
 
   class Response
     extend Plivo::Element::ClassMethods
     include Plivo::Element
-    allowed_element :Speak, :Play, :GetDigits, :Record, :Dial, :Redirect, :Wait, :Hangup, :PreAnswer, :Conference, :SIPTransfer
+    allowed_element :Speak, :Play, :GetDigits, :Record, :Dial, :Redirect, :Wait, :Hangup, :PreAnswer, :Conference
   end
 
   # Plivo Utility function and Request Validation class

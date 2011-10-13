@@ -2,14 +2,14 @@ require 'rubygems'
 require 'rake/gempackagetask'
 
 spec = Gem::Specification.new do |s|
-  s.name = "plivohelper"
+  s.name = "plivocldhelper"
   s.version = "0.1"
   s.author = "Team Plivo"
-  s.email = "hello@plivo.org"
-  s.homepage = "http://www.plivo.org"
-  s.description = "A Ruby gem for communicating with the Plivo API and generating RESTXML"
+  s.email = "hello@plivo.com"
+  s.homepage = "http://www.plivo.com"
+  s.description = "A Ruby gem for communicating with the Plivo API and generating XML"
   s.platform = Gem::Platform::RUBY
-  s.summary = "A Ruby gem for communicating with the Plivo API and generating RESTXML"
+  s.summary = "A Ruby gem for communicating with the Plivo API and generating XML"
   s.files = FileList["{lib}/*"].to_a
   s.require_path = "lib"
   s.test_files = FileList["{test}/response_spec.rb"].to_a

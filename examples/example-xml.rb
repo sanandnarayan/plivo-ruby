@@ -1,4 +1,4 @@
-require 'plivohelper'
+require 'plivocldhelper'
 
 =begin
 The RESTXML Ruby Response Library makes it easy to write RESTXML without having
@@ -102,13 +102,13 @@ puts @r.respond
 # ===========================================================================
 # 5. Convenience methods
 @r = Plivo::Response.new
-@r.addSpeak "Hello World", :voice => "flite", :language => "en", :loop => "10"
+@r.addSpeak "Hello World", :voice => "woman", :language => "en", :loop => "10"
 @r.addConference("MyRoom")
 @r.addPlay "http://www.mp3.com"
 puts @r.respond
 
 #<Response>
-#  <Speak voice="flite" language="en" loop="10">Hello World</Speak>
+#  <Speak voice="woman" language="en" loop="10">Hello World</Speak>
 #  <Conference>MyRoom</Conference>
 #  <Play>http://www.mp3.com</Play>
 #</Response>
