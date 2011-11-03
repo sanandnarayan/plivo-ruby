@@ -16,7 +16,7 @@ module Plivo
 
     #@param [String, String] Your Plivo SID/ID and Auth Token
     #@return [Object] Rest object
-    def initialize(id, token, url='http://testcloud.plivo.com:8085/', version='v1')
+    def initialize(id, token, url='http://api.plivo.com/', version='v1')
       @id = id
       @token = token
       @url = url
@@ -50,32 +50,53 @@ module Plivo
       return fetch(uri, vars, method)
     end
 
+    # REST Phone Search Helper
+    def phone_search(params)
+      path = @version + '/Phone/Search/'
+      method = 'POST'
+      return request(path, method, params)
+    end
+
+    # REST Phone Order Helper
+    def phone_order(params)
+      path = @version + '/Phone/Order/'
+      method = 'POST'
+      return request(path, method, params)
+    end
+
+    # REST Phone Status Helper
+    def phone_status(params)
+      path = @version + '/Phone/Status/'
+      method = 'POST'
+      return request(path, method, params)
+    end
+
     # REST Call Helper
-    def call(call_params)
+    def call(params)
       path = @version + '/Call/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Bulk Call Helper
-    def bulk_call(call_params)
+    def bulk_call(params)
       path = @version + '/Call/Bulk/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Group Call Helper
-    def group_call(call_params)
+    def group_call(params)
       path = @version + '/Call/Group/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Transfer Live Call Helper
-    def transfer_call(call_params)
+    def transfer_call(params)
       path = @version + '/Call/Transfer/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Hangup All Live Calls Helper
@@ -86,157 +107,157 @@ module Plivo
     end
 
     # REST Hangup Live Call Helper
-    def hangup_call(call_params)
+    def hangup_call(params)
       path = @version + '/Call/Hangup/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Schedule Hangup Helper
-    def schedule_hangup(call_params)
+    def schedule_hangup(params)
       path = @version + '/Call/Hangup/Schedule/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Cancel a Scheduled Hangup Helper
-    def cancel_scheduled_hangup(call_params)
+    def cancel_scheduled_hangup(params)
       path = @version + '/Call/Hangup/Schedule/Cancel/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST RecordStart helper
-    def record_start(call_params)
+    def record_start(params)
       path = @version + '/Call/Record/Start/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST RecordStop
-    def record_stop(call_params)
+    def record_stop(params)
       path = @version + '/Call/Record/Stop/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Play something on a Call Helper
-    def play(call_params)
+    def play(params)
       path = @version + '/Call/Play/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST PlayStop on a Call Helper
-    def play_stop(call_params)
+    def play_stop(params)
       path = @version + '/Call/Play/Stop/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Schedule Play Helper
-    def schedule_play(call_params)
+    def schedule_play(params)
       path = @version + '/Call/Play/Schedule/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Cancel a Scheduled Play Helper
-    def cancel_scheduled_play(call_params)
+    def cancel_scheduled_play(params)
       path = @version + '/Call/Play/Schedule/Cancel/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Send digits to a Call Helper
-    def send_digits(call_params)
+    def send_digits(params)
       path = @version + '/Call/SendDigits/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Conference Mute helper
-    def conference_mute(call_params)
+    def conference_mute(params)
       path = @version + '/Conference/Member/Mute/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Conference Unmute helper
-    def conference_unmute(call_params)
+    def conference_unmute(params)
       path = @version + '/Conference/Member/Unmute/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Conference Kick helper
-    def conference_kick(call_params)
+    def conference_kick(params)
       path = @version + '/Conference/Member/Kick/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Conference Hangup helper
-    def conference_hangup(call_params)
+    def conference_hangup(params)
       path = @version + '/Conference/Member/Hangup/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Conference Deaf helper
-    def conference_deaf(call_params)
+    def conference_deaf(params)
       path = @version + '/Conference/Member/Deaf/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Conference Undeaf helper
-    def conference_undeaf(call_params)
+    def conference_undeaf(params)
       path = @version + '/Conference/Member/Undeaf/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Conference RecordStart helper
-    def conference_record_start(call_params)
+    def conference_record_start(params)
       path = @version + '/Conference/Record/Start/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Conference RecordStop
-    def conference_record_stop(call_params)
+    def conference_record_stop(params)
       path = @version + '/Conference/Record/Stop/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Conference Play helper
-    def conference_play(call_params)
+    def conference_play(params)
       path = @version + '/Conference/Play/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Conference Speak helper
-    def conference_speak(call_params)
+    def conference_speak(params)
       path = @version + '/Conference/Speak/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Conference List Helper
-    def conference_list(call_params)
+    def conference_list(params)
       path = @version + '/Conference/List/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
     # REST Conference List Members Helper
-    def conference_list_members(call_params)
+    def conference_list_members(params)
       path = @version + '/Conference/Member/List/'
       method = 'POST'
-      return request(path, method, call_params)
+      return request(path, method, params)
     end
 
 
