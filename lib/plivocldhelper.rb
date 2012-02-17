@@ -1,577 +1,830 @@
+#!/usr/bin/env ruby
 
-# @author Plivo
-module Plivo
-  require 'net/http'
-  require 'net/https'
-  require 'uri'
-  require 'cgi'
-  require 'rubygems'
-  require 'builder'
-  require 'openssl'
-  require 'base64'
+$:.unshift File.dirname(__FILE__) + "/../lib"
+
+require 'rubygems'
+require 'restclient'
+require 'json'
+require 'rexml/document'
 
 
-  # Plivo REST Helpers
-  class Rest
 
-    #@param [String, String] Your Plivo SID/ID and Auth Token
-    #@return [Object] Rest object
-    def initialize(id, token, url='http://api.plivo.com/', version='v1')
-      @id = id
-      @token = token
-      @url = url
-      @version = version
+class PlivoError < Exception
+end 
+
+
+
+class RestAPI
+    attr_accessor :auth_id, :auth_token, :url, :version, :api, :headers, :rest
+
+    def initialize(auth_id, auth_token, url="http://api.plivo.com", version="v1")
+        @auth_id = auth_id
+        @auth_token = auth_token
+        @url = url.chomp('/')
+        @version = version
+        @api = @url + '/' + @version + '/Account/' + @auth_id
+        @headers = {"User-Agent" => "RubyPlivo"}
+        @rest = RestClient::Resource.new(@api, @auth_id, @auth_token)
     end
 
-    #sends a request and gets a response from the Plivo REST API
-    #
-    #@param [String, String, Hash]
-    #path, the URL (relative to the endpoint URL, after the /v1
-    #method, the HTTP method to use, defaults to POST
-    #vars, for POST or PUT, a dict of data to send
-    #
-    #@return Plivo response XML
-    #@raises [ArgumentError] Invalid path parameter
-    #@raises [NotImplementedError] Method given is not implemented
-    def request(path, method=nil, vars={})
-      if !path || path.length < 1
-          raise ArgumentError, 'Invalid path parameter'
+    def hash_to_params(myhash)
+        return myhash.map{|k,v| "#{CGI.escape(k)}=#{CGI.escape(v)}"}.join("&")
+    end
+
+    def request(method, path, params=nil)
+        if method == "POST"
+            if params
+                r = @rest[path].post params.to_json, :content_type => 'application/json'
+            else
+                r = @rest[path].post
+            end
+            code = r.code
+            raw = r.to_str
+            response = JSON.parse(raw)
+            return [code, response]
+        elsif method == "GET"
+            if params
+                path = path + '?' + hash_to_params(params)
+                r = @rest[path].get
+            else
+                r = @rest[path].get
+            end
+            code = r.code
+            raw = r.to_str
+            response = JSON.parse(raw)
+            return [code, response]
+        elsif method == "DELETE"
+            if params
+                path = path + '?' + hash_to_params(params)
+                r = @rest[path].delete
+            else
+                r = @rest[path].delete
+            end
+            code = r.code
+            return [code, ""]
         end
-        if method && !['GET', 'POST'].include?(method)
-          raise NotImplementedError, 'HTTP %s not implemented' % method
-        end
-
-        if path[0, 1] == '/'
-          uri = @url + path
-        else
-          uri = @url + '/' + path
-      end
-
-      return fetch(uri, vars, method)
+        return [405, 'Method Not Supported']
     end
 
-    # REST Phone Search Helper
-    def phone_search(params)
-      path = @version + '/Phone/Search/'
-      method = 'POST'
-      return request(path, method, params)
+    ## Accounts ##
+    def get_account(params={})
+        return request('GET', '/')
     end
 
-    # REST Phone Order Helper
-    def phone_order(params)
-      path = @version + '/Phone/Order/'
-      method = 'POST'
-      return request(path, method, params)
+    def modify_account(params={})
+        return request('POST', '/', params)
     end
 
-    # REST Phone Status Helper
-    def phone_status(params)
-      path = @version + '/Phone/Status/'
-      method = 'POST'
-      return request(path, method, params)
+    def get_subaccounts(params={})
+        return request('GET', '/Subaccount/')
     end
 
-    # REST Call Helper
-    def call(params)
-      path = @version + '/Call/'
-      method = 'POST'
-      return request(path, method, params)
+    def create_subaccount(params={})
+        return request('POST', '/Subaccount/', params)
     end
 
-    # REST Bulk Call Helper
-    def bulk_call(params)
-      path = @version + '/Call/Bulk/'
-      method = 'POST'
-      return request(path, method, params)
+    def get_subaccount(params={})
+        subauth_id = params.delete("subauth_id")
+        return request('GET', '/Subaccount/#{subauth_id}/')
     end
 
-    # REST Group Call Helper
-    def group_call(params)
-      path = @version + '/Call/Group/'
-      method = 'POST'
-      return request(path, method, params)
+    def modify_subaccount(params={})
+        subauth_id = params.delete("subauth_id")
+        return request('POST', '/Subaccount/#{subauth_id}/', params)
     end
 
-    # REST Transfer Live Call Helper
-    def transfer_call(params)
-      path = @version + '/Call/Transfer/'
-      method = 'POST'
-      return request(path, method, params)
+    def delete_subaccount(params={})
+        subauth_id = params.delete("subauth_id")
+        return request('DELETE', '/Subaccount/#{subauth_id}/')
     end
 
-    # REST Hangup All Live Calls Helper
-    def hangup_all_calls()
-      path = @version + '/Call/Hangup/All/'
-      method = 'POST'
-      return request(path, method)
+    ## Applications ##
+    def get_applications(params={})
+        return request('GET', '/Application/', params)
     end
 
-    # REST Hangup Live Call Helper
-    def hangup_call(params)
-      path = @version + '/Call/Hangup/'
-      method = 'POST'
-      return request(path, method, params)
+    def create_application(params={})
+        return request('POST', '/Application/', params)
     end
 
-    # REST Schedule Hangup Helper
-    def schedule_hangup(params)
-      path = @version + '/Call/Hangup/Schedule/'
-      method = 'POST'
-      return request(path, method, params)
+    def get_application(params={})
+        app_id = self.params.delete("app_id")
+        return request('GET', '/Application/#{app_id}/')
     end
 
-    # REST Cancel a Scheduled Hangup Helper
-    def cancel_scheduled_hangup(params)
-      path = @version + '/Call/Hangup/Schedule/Cancel/'
-      method = 'POST'
-      return request(path, method, params)
+    def modify_application(params={})
+        app_id = self.params.delete("app_id")
+        return request('POST', '/Application/#{app_id}/', params)
     end
 
-    # REST RecordStart helper
-    def record_start(params)
-      path = @version + '/Call/Record/Start/'
-      method = 'POST'
-      return request(path, method, params)
+    def delete_application(params={})
+        app_id = self.params.delete("app_id")
+        return request('DELETE', '/Application/#{app_id}/')
     end
 
-    # REST RecordStop
-    def record_stop(params)
-      path = @version + '/Call/Record/Stop/'
-      method = 'POST'
-      return request(path, method, params)
+    def get_subaccount_applications(params={})
+        subauth_id = params.delete("subauth_id")
+        return request('GET', '/Subaccount/#{subauth_id}/Application/')
     end
 
-    # REST Play something on a Call Helper
-    def play(params)
-      path = @version + '/Call/Play/'
-      method = 'POST'
-      return request(path, method, params)
+    def get_subaccount_application(params={})
+        subauth_id = params.delete("subauth_id")
+        app_id = self.params.delete("app_id")
+        return request('GET', '/Subaccount/#{subauth_id}/Application/#{app_id}/')
     end
 
-    # REST PlayStop on a Call Helper
-    def play_stop(params)
-      path = @version + '/Call/Play/Stop/'
-      method = 'POST'
-      return request(path, method, params)
+    def create_subaccount_application(params={})
+        subauth_id = params.delete("subauth_id")
+        return request('POST', '/Subaccount/#{subauth_id}/Application/', params)
     end
 
-    # REST Schedule Play Helper
-    def schedule_play(params)
-      path = @version + '/Call/Play/Schedule/'
-      method = 'POST'
-      return request(path, method, params)
+    def modify_subaccount_application(params={})
+        subauth_id = params.delete("subauth_id")
+        app_id = self.params.delete("app_id")
+        return request('POST', '/Subaccount/#{subauth_id}/Application/#{app_id}/', params)
     end
 
-    # REST Cancel a Scheduled Play Helper
-    def cancel_scheduled_play(params)
-      path = @version + '/Call/Play/Schedule/Cancel/'
-      method = 'POST'
-      return request(path, method, params)
+    def delete_subaccount_application(params={})
+        subauth_id = params.delete("subauth_id")
+        app_id = self.params.delete("app_id")
+        return request('DELETE', '/Subaccount/#{subauth_id}/Application/#{app_id}/')
     end
 
-    # REST Send digits to a Call Helper
-    def send_digits(params)
-      path = @version + '/Call/SendDigits/'
-      method = 'POST'
-      return request(path, method, params)
+    ## Numbers ##
+    def get_numbers(params={})
+        return request('GET', '/Number/', params)
     end
 
-    # REST Conference Mute helper
-    def conference_mute(params)
-      path = @version + '/Conference/Member/Mute/'
-      method = 'POST'
-      return request(path, method, params)
+    def search_numbers(params={})
+        return request('GET', '/Number/Search/', params)
     end
 
-    # REST Conference Unmute helper
-    def conference_unmute(params)
-      path = @version + '/Conference/Member/Unmute/'
-      method = 'POST'
-      return request(path, method, params)
+    def get_number(params={})
+        number = self.params.delete("number")
+        return request('GET', '/Number/#{number}/')
     end
 
-    # REST Conference Kick helper
-    def conference_kick(params)
-      path = @version + '/Conference/Member/Kick/'
-      method = 'POST'
-      return request(path, method, params)
+    def rent_number(params={})
+        number = self.params.delete("number")
+        return request('POST', '/Number/Action/#{number}/')
     end
 
-    # REST Conference Hangup helper
-    def conference_hangup(params)
-      path = @version + '/Conference/Member/Hangup/'
-      method = 'POST'
-      return request(path, method, params)
+    def unrent_number(params={})
+        number = self.params.delete("number")
+        return request('DELETE', '/Number/Action/#{number}/')
     end
 
-    # REST Conference Deaf helper
-    def conference_deaf(params)
-      path = @version + '/Conference/Member/Deaf/'
-      method = 'POST'
-      return request(path, method, params)
+    def get_subaccount_numbers(params={})
+        subauth_id = params.delete("subauth_id")
+        return request('GET', '/Subaccount/#{subauth_id}/Number/', params)
     end
 
-    # REST Conference Undeaf helper
-    def conference_undeaf(params)
-      path = @version + '/Conference/Member/Undeaf/'
-      method = 'POST'
-      return request(path, method, params)
+    def get_subaccount_number(params={})
+        subauth_id = params.delete("subauth_id")
+        number = self.params.delete("number")
+        return request('GET', '/Subaccount/#{subauth_id}/Number/#{number}/')
     end
 
-    # REST Conference RecordStart helper
-    def conference_record_start(params)
-      path = @version + '/Conference/Record/Start/'
-      method = 'POST'
-      return request(path, method, params)
+    ## Schedule ##
+    def get_scheduled_tasks(params={})
+        return request('GET', '/Schedule/')
     end
 
-    # REST Conference RecordStop
-    def conference_record_stop(params)
-      path = @version + '/Conference/Record/Stop/'
-      method = 'POST'
-      return request(path, method, params)
+    def cancel_scheduled_task(params={})
+        task_id = params.delete("task_id")
+        return request('DELETE', '/Schedule/#{task_id}/')
     end
 
-    # REST Conference Play helper
-    def conference_play(params)
-      path = @version + '/Conference/Play/'
-      method = 'POST'
-      return request(path, method, params)
+    ## Calls ##
+    def get_cdrs(params={})
+        return request('GET', '/Call/', params)
     end
 
-    # REST Conference Speak helper
-    def conference_speak(params)
-      path = @version + '/Conference/Speak/'
-      method = 'POST'
-      return request(path, method, params)
+    def get_cdr(params={})
+        record_id = params.delete('record_id')
+        return request('GET', '/Call/#{record_id}/')
     end
 
-    # REST Conference List Helper
-    def conference_list(params)
-      path = @version + '/Conference/List/'
-      method = 'POST'
-      return request(path, method, params)
+    def get_live_calls(params={})
+        return request('GET', '/Call/', params={'status'=>'live'})
     end
 
-    # REST Conference List Members Helper
-    def conference_list_members(params)
-      path = @version + '/Conference/Member/List/'
-      method = 'POST'
-      return request(path, method, params)
+    def get_live_call(params={})
+        call_uuid = params.delete('call_uuid')
+        return request('GET', '/Call/#{call_uuid}/', params={'status'=>'live'})
     end
 
-
-    #encode the parameters into a URL friendly string
-    #
-    #@param [Hash] URL key / values
-    #@return [String] Encoded URL
-    protected
-    def urlencode(params)
-      params.to_a.collect! \
-        { |k, v| "#{k}=#{CGI.escape(v.to_s)}" }.join("&")
+    def make_call(params={})
+        return request('POST', '/Call/', params)
     end
 
-    # Create the uri for the REST call
-    #
-    #@param [String, Hash] Base URL and URL parameters
-    #@return [String] URI for the REST call
-    def build_get_uri(uri, params)
-      if params && params.length > 0
-        if uri.include?('?')
-          if uri[-1, 1] != '&'
-            uri += '&'
-          end
-            uri += urlencode(params)
-          else
-            uri += '?' + urlencode(params)
-        end
-      end
-      return uri
+    def hangup_all_calls(params={})
+        return request('DELETE', '/Call/')
     end
 
-    # Returns a http request for the given url and parameters
-    #
-    #@param [String, Hash, String] Base URL, URL parameters, optional METHOD
-    #@return [String] URI for the REST call
-    def fetch(url, params, method=nil)
-      if method && method == 'GET'
-        url = build_get_uri(url, params)
-      end
-      uri = URI.parse(url)
-
-      http = Net::HTTP.new(uri.host, uri.port)
-      #http.use_ssl = true
-
-      if method && method == 'GET'
-        req = Net::HTTP::Get.new(uri.request_uri)
-      elsif method && method == 'DELETE'
-        req = Net::HTTP::Delete.new(uri.request_uri)
-      elsif method && method == 'PUT'
-        req = Net::HTTP::Put.new(uri.request_uri)
-        req.set_form_data(params)
-      else
-        req = Net::HTTP::Post.new(uri.request_uri)
-        req.set_form_data(params)
-      end
-      req.basic_auth(@id, @token)
-
-      return http.request(req)
-    end
-  end
-
-  # RESTXML Response Helpers
-  module Element
-    module ClassMethods
-      @attributes = []
-      @allowed_element = []
-      attr_accessor :attributes
-
-      def allowed_element(*element)
-        return @allowed_element if element == []
-        @allowed_element = [] if @allowed_element.nil?
-        element.each do |element_element|
-          cleaned_element_element = element_element.to_s.slice(0,1).capitalize + element_element.to_s.slice(1..-1)
-          @allowed_element << cleaned_element_element
-        end
-        @allowed_element = @allowed_element.uniq
-      end
-
-      def attributes(*attrs)
-        return @attributes if attrs == []
-        @attributes = [] if @attributes.nil?
-        @attributes = (@attributes + attrs).uniq
-        attr_accessor(*@attributes)
-        @attributes
-      end
+    def transfer_call(params={})
+        call_uuid = params.delete('call_uuid')
+        return request('POST', '/Call/#{call_uuid}/', params)
     end
 
-    def attributes
-      self.class.attributes
+    def hangup_call(params={})
+        call_uuid = params.delete('call_uuid')
+        return request('DELETE', '/Call/#{call_uuid}/')
     end
 
-    #test if a given element element is allowed to be nested
-      #
-      #@param [Object] Element to be appended
-      #@return [true, false]
-    def allowed?(element_element)
-      self.class.allowed_element.nil? ? false : self.class.allowed_element.include?(element_element.class.name.split('::')[1])
+    def record(params={})
+        call_uuid = params.delete('call_uuid')
+        return request('POST', '/Call/#{call_uuid}/Record/', params)
+    end
+        
+    def stop_record(params={})
+        call_uuid = params.delete('call_uuid')
+        return request('DELETE', '/Call/#{call_uuid}/Record/')
     end
 
-    #initialize a plivo response object
-      #
-      #@param [String, Hash] Body of the element, and a hash of the attributes
-      #@return [Object] Plivo element object
-      #
-      #@raises [ArgumentError] Invalid Argument
-    def initialize(body = nil, params = {})
-      @children = []
-      if body.class == String
-        @body = body
-      else
-        @body = nil
-        params = body || {}
-      end
-      params.each do |k,v|
-        if !self.class.attributes.nil? && self.class.attributes.include?(k)
-          send(k.to_s+"=",v)
-        else
-          raise ArgumentError, "Attribute Not Supported"
-        end
-      end
+    def play(params={})
+        call_uuid = params.delete('call_uuid')
+        return request('POST', '/Call/#{call_uuid}/Play/', params)
+    end
+        
+    def stop_play(params={})
+        call_uuid = params.delete('call_uuid')
+        return request('DELETE', '/Call/#{call_uuid}/Play/')
     end
 
-    #set an attribute key / value
-      #no error checking
-      #
-      #@param [Hash] Hash of options
-      #@return void
-    def set(params = {})
-      params.each do |k,v|
-        self.class.attributes k.to_s
-        send(k.to_s+"=",v)
-      end
+    def speak(params={})
+        call_uuid = params.delete('call_uuid')
+        return request('POST', '/Call/#{call_uuid}/Speak/', params)
+    end
+        
+    def send_digits(params={})
+        call_uuid = params.delete('call_uuid')
+        return request('POST', '/Call/#{call_uuid}/DTMF/', params)
     end
 
-    #output valid Plivo markup
-      #
-      #@param [Hash] Hash of options
-      #@return [String] Plivo Markup (in XML)
-    def respond(opts = {})
-      opts[:builder]  ||= Builder::XmlMarkup.new(:indent => opts[:indent])
-      b = opts[:builder]
-      attrs = {}
-      attributes.each {|a| attrs[a] = send(a) unless send(a).nil? } unless attributes.nil?
-
-      if @children and @body.nil?
-        b.__send__(self.class.to_s.split(/::/)[-1], attrs) do
-          @children.each {|e|e.respond( opts.merge(:skip_instruct => true) )}
-        end
-      elsif @body and @children == []
-        b.__send__(self.class.to_s.split(/::/)[-1], @body, attrs)
-      else
-        raise ArgumentError, "Cannot have children and a body at the same time"
-      end
+    def get_subaccount_cdrs(params={})
+        subauth_id = params.delete('subauth_id')
+        return request('GET', '/Subaccount/#{subauth_id}/Call/', params)
     end
 
-    #output valid Plivo markup encoded for inclusion in a URL
-      #
-      #@param []
-      #@return [String] URL encoded Plivo Markup (XML)
-    def asURL()
-      CGI::escape(self.respond)
+    def get_subaccount_cdr(params={})
+        subauth_id = params.delete('subauth_id')
+        record_id = params.delete('record_id')
+        return request('GET', '/Subaccount/#{subauth_id}/Call/#{record_id}/')
     end
 
-    def append(element_element)
-      if(allowed?(element_element))
-        @children << element_element
-        @children[-1]
-      else
-        raise ArgumentError, "Element Not Supported"
-      end
+    ## Calls requests ##
+    def hangup_request(params={})
+        request_uuid = params.delete('request_uuid')
+        return request('DELETE', '/Request/#{request_uuid}/')
     end
 
-    # Element Convenience Methods
-    def addSpeak(string_to_speak = nil, opts = {})
-      append Plivo::Speak.new(string_to_speak, opts)
+    ## Conferences ##
+    def get_live_conferences(params={})
+        return request('GET', '/Conference/', params)
     end
 
-    def addPlay(file_to_play = nil, opts = {})
-      append Plivo::Play.new(file_to_play, opts)
+    def hangup_all_conferences(params={})
+        return request('DELETE', '/Conference/')
     end
 
-    def addGetDigits(opts = {})
-      append Plivo::GetDigits.new(opts)
+    def get_live_conference(params={})
+        conference_id = params.delete('conference_id')
+        return request('GET', '/Conference/#{conference_id}/', params)
     end
 
-    def addRecord(opts = {})
-      append Plivo::Record.new(opts)
+    def hangup_conference(params={})
+        conference_id = params.delete('conference_id')
+        return request('DELETE', '/Conference/#{conference_id}/')
     end
 
-    def addDial(number = nil, opts = {})
-      append Plivo::Dial.new(number, opts)
+    def hangup_member(params={})
+        conference_id = params.delete('conference_id')
+        member_id = params.delete('member_id')
+        return request('DELETE', '/Conference/#{conference_id}/Member/#{member_id}/')
     end
 
-    def addRedirect(url = nil, opts = {})
-      append Plivo::Redirect.new(url, opts)
+    def play_member(params={})
+        conference_id = params.delete('conference_id')
+        member_id = params.delete('member_id')
+        return request('POST', '/Conference/#{conference_id}/Member/#{member_id}/Play/', params)
+    end
+        
+    def stop_play_member(params={})
+        conference_id = params.delete('conference_id')
+        member_id = params.delete('member_id')
+        return request('DELETE', '/Conference/#{conference_id}/Member/#{member_id}/Play/')
     end
 
-    def addWait(opts = {})
-      append Plivo::Wait.new(opts)
+    def speak_member(params={})
+        conference_id = params.delete('conference_id')
+        member_id = params.delete('member_id')
+        return request('POST', '/Conference/#{conference_id}/Member/#{member_id}/Speak/', params)
     end
 
-    def addHangup(opts = {})
-      append Plivo::Hangup.new(opts)
+    def deaf_member(params={})
+        conference_id = params.delete('conference_id')
+        member_id = params.delete('member_id')
+        return request('POST', '/Conference/#{conference_id}/Member/#{member_id}/Deaf/')
     end
 
-    def addNumber(number, opts = {})
-      append Plivo::Number.new(number, opts)
+    def undeaf_member(params={})
+        conference_id = params.delete('conference_id')
+        member_id = params.delete('member_id')
+        return request('DELETE', '/Conference/#{conference_id}/Member/#{member_id}/Deaf/')
     end
 
-    def addConference(room, opts = {})
-      append Plivo::Conference.new(room, opts)
+    def mute_member(params={})
+        conference_id = params.delete('conference_id')
+        member_id = params.delete('member_id')
+        return request('POST', '/Conference/#{conference_id}/Member/#{member_id}/Mute/')
     end
 
-    def addPreAnswer(opts = {})
-      append Plivo::PreAnswer.new(opts)
+    def unmute_member(params={})
+        conference_id = params.delete('conference_id')
+        member_id = params.delete('member_id')
+        return request('DELETE', '/Conference/#{conference_id}/Member/#{member_id}/Mute/')
     end
 
-  end
-
-  class Speak
-    extend Plivo::Element::ClassMethods
-    include Plivo::Element
-    attributes :voice, :language, :loop
-  end
-
-  class Play
-    extend Plivo::Element::ClassMethods
-    include Plivo::Element
-    attributes :loop
-  end
-
-  class GetDigits
-    extend Plivo::Element::ClassMethods
-    include Plivo::Element
-    attributes :action, :method, :timeout, :finishOnKey, :numDigits, :retries, :playBeep, :validDigits, :invalidDigitsSound
-    allowed_element :play, :speak, :wait
-  end
-
-  class Record
-    extend Plivo::Element::ClassMethods
-    include Plivo::Element
-    attributes :action, :method, :timeout, :finishOnKey, :maxLength, :playBeep, :bothLegs, :redirect
-  end
-
-  class Dial
-    extend Plivo::Element::ClassMethods
-    include Plivo::Element
-    attributes :action, :method, :timeout, :hangupOnStar, :timeLimit, :callerId, :callerName, :confirmSound, :confirmKey, :dialMusic, :redirect, :callbackUrl, :callbackMethod, :digitsMatch
-    allowed_element :number
-  end
-
-  class Redirect
-    extend Plivo::Element::ClassMethods
-    include Plivo::Element
-  end
-
-  class Wait
-    extend Plivo::Element::ClassMethods
-    include Plivo::Element
-    attributes :length
-  end
-
-  class Hangup
-    extend Plivo::Element::ClassMethods
-    include Plivo::Element
-    attributes :reason, :schedule
-  end
-
-  class Number
-    extend Plivo::Element::ClassMethods
-    include Plivo::Element
-    attributes :sendDigits, :sendOnPreanswer
-  end
-
-  class Conference
-    extend Plivo::Element::ClassMethods
-    include Plivo::Element
-    attributes :muted, :enterSound, :exitSound, :startConferenceOnEnter, :endConferenceOnExit, :waitSound, :timeLimit, :hangupOnStar, :record, :action, :method, :callbackUrl, :callbackMethod, :digitsMatch, :stayAlone, :floorEvent
-  end
-
-  class PreAnswer
-    extend Plivo::Element::ClassMethods
-    include Plivo::Element
-    allowed_element :Speak, :Play, :GetDigits, :Wait, :Redirect
-  end
-
-  class Response
-    extend Plivo::Element::ClassMethods
-    include Plivo::Element
-    allowed_element :Speak, :Play, :GetDigits, :Record, :Dial, :Redirect, :Wait, :Hangup, :PreAnswer, :Conference
-  end
-
-  # Plivo Utility function and Request Validation class
-  class Utils
-
-    #initialize a plivo utils abject
-    #
-    #@param [String, String] Your Plivo SID/ID and Auth Token
-    #@return [Object] Utils object
-    def initialize(id, token)
-      @id = id
-      @token = token
+    def kick_member(params={})
+        conference_id = params.delete('conference_id')
+        member_id = params.delete('member_id')
+        return request('POST', '/Conference/#{conference_id}/Member/#{member_id}/Kick/')
     end
 
-    def validateRequest(signature, url, params = {})
-      sorted_post_params = params.sort
-      data = url
-      sorted_post_params.each do |pkey|
-        data = data + pkey[0]+pkey[1]
-      end
-      digest = OpenSSL::Digest::Digest.new('sha1')
-      expected = Base64.encode64(OpenSSL::HMAC.digest(digest, @token, data)).strip
-      return expected == signature
+    def record_conference(params={}) 
+        conference_id = params.delete('conference_id')
+        return request('POST', '/Conference/#{conference_id}/Record/', params)
     end
-  end
 
+    def stop_record_conference(params={}) 
+        conference_id = params.delete('conference_id')
+        return request('DELETE', '/Conference/#{conference_id}/Record/')
+    end
+
+    ## Recordings ##
+    def get_recordings(params={})
+        return request('GET', '/Recording/', params)
+    end
+
+    def get_recording(params={})
+        recording_id = params.delete('recording_id')
+        return request('GET', '/Recording/#{recording_id}/')
+    end
+
+    def get_subaccount_recordings(params={})
+        subauth_id = params.delete('subauth_id')
+        return request('GET', '/Subaccount/#{subauth_id}/Recording/')
+    end
+
+    def get_subaccount_recording(params={})
+        subauth_id = params.delete('subauth_id')
+        recording_id = params.delete('recording_id')
+        return request('GET', '/Subaccount/#{subauth_id}/Recording/#{recording_id}/')
+    end
+
+    ## Endpoints ##
+    def get_endpoints(params={})
+        return request('GET', '/Endpoint/', params)
+    end
+
+    def create_endpoint(params={})
+        return request('POST', '/Endpoint/', params)
+    end
+
+    def get_endpoint(params={})
+        endpoint_id = params.delete('endpoint_id')
+        return request('GET', '/Endpoint/#{endpoint_id}/')
+    end
+
+    def modify_endpoint(params={})
+        endpoint_id = params.delete('endpoint_id')
+        return request('POST', '/Endpoint/#{endpoint_id}/', params)
+    end
+
+    def delete_endpoint(params={})
+        endpoint_id = params.delete('endpoint_id')
+        return request('DELETE', '/Endpoint/#{endpoint_id}/')
+    end
+
+    def get_subaccount_endpoints(params={})
+        subauth_id = params.delete('subauth_id')
+        return request('GET', '/Subaccount/#{subauth_id}/Endpoint/')
+    end
+
+    def create_subaccount_endpoint(params={})
+        subauth_id = params.delete('subauth_id')
+        return request('POST', '/Subaccount/#{subauth_id}/Endpoint/', params)
+    end
+
+    def get_subaccount_endpoint(params={})
+        subauth_id = params.delete('subauth_id')
+        endpoint_id = params.delete('endpoint_id')
+        return request('GET', '/Subaccount/#{subauth_id}/Endpoint/#{endpoint_id}/')
+    end
+
+    def modify_subaccount_endpoint(params={})
+        subauth_id = params.delete('subauth_id')
+        endpoint_id = params.delete('endpoint_id')
+        return request('POST', '/Subaccount/#{subauth_id}/Endpoint/#{endpoint_id}/', params)
+    end
+
+    def delete_subaccount_endpoint(params={})
+        subauth_id = params.delete('subauth_id')
+        endpoint_id = params.delete('endpoint_id')
+        return request('DELETE', '/Subaccount/#{subauth_id}/Endpoint/#{endpoint_id}/')
+    end
+
+    ## Carriers ##
+    def get_carriers(params={})
+        return request('GET', '/Carrier/', params)
+    end
+
+    def create_carrier(params={})
+        return request('POST', '/Carrier/', params)
+    end
+
+    def get_carrier(params={})
+        carrier_id = params.delete('carrier_id')
+        return request('GET', '/Carrier/#{carrier_id}/')
+    end
+
+    def modify_carrier(params={})
+        carrier_id = params.delete('carrier_id')
+        return request('POST', '/Carrier/#{carrier_id}/', params)
+    end
+
+    def delete_carrier(params={})
+        carrier_id = params.delete('carrier_id')
+        return request('DELETE', '/Carrier/#{carrier_id}/')
+    end
+
+    ## Carrier Routings ##
+    def get_carrier_routings(params={})
+        return request('GET', '/CarrierRouting/', params)
+    end
+
+    def create_carrier_routing(params={})
+        return request('POST', '/CarrierRouting/', params)
+    end
+
+    def get_carrier_routing(params={})
+        routing_id = params.delete('routing_id')
+        return request('GET', '/CarrierRouting/#{routing_id}/')
+    end
+
+    def modify_carrier_routing(params={})
+        routing_id = params.delete('routing_id')
+        return request('POST', '/CarrierRouting/#{routing_id}/', params)
+    end
+
+    def delete_carrier_routing(params={})
+        routing_id = params.delete('routing_id')
+        return request('DELETE', '/CarrierRouting/#{routing_id}/')
+    end
+
+    ## Message ##
+    def send_message(params={})
+        return request('POST', '/Message/', params)
+    end
 end
+
+
+
+module ClassLevelInheritableAttributes
+    def self.included(base)
+        base.extend(ClassMethods)    
+    end
+  
+    module ClassMethods
+        def inheritable_attributes(*args)
+            @inheritable_attributes ||= [:inheritable_attributes]
+            @inheritable_attributes += args
+            args.each do |arg|
+            class_eval %(
+                class << self; attr_accessor :#{arg} end
+            )
+            end
+            @inheritable_attributes
+        end
+    
+        def inherited(subclass)
+            @inheritable_attributes.each do |inheritable_attribute|
+                instance_var = "@#{inheritable_attribute}"
+                subclass.instance_variable_set(instance_var, instance_variable_get(instance_var))
+            end
+        end
+    end
+end
+
+
+class Element
+    class << self 
+        attr_accessor :valid_attributes, :nestables
+    end 
+    @nestables = []
+    @valid_attributes = []
+
+    attr_accessor :name, :node
+
+    def initialize(body=nil, attributes={})
+        @name = self.class.name
+        @body = body
+        @node = REXML::Element.new @name
+        attributes.each do |k, v|
+            if self.class.valid_attributes.include?(k)
+                @node.attributes[k] = convert_value(v)
+            else
+                raise PlivoError, 'invalid attribute ' + k + ' for ' + @name
+            end
+        end
+        if @body
+            @node.text = @body
+        end
+    end
+
+    def convert_value(v)
+        if v == true
+            return "true"
+        elsif v == false
+            return "false"
+        elsif v == nil
+            return "none"
+        elsif v == "get"
+            return "GET"
+        elsif v == "post"
+            return "POST"
+        else
+            return v
+        end
+    end
+
+    def add(element)
+        if self.class.nestables.include?(element.name)
+            @node.elements << element.node
+            return element
+        else
+            raise PlivoError, element.name + ' not nestable in ' + @name
+        end
+    end
+
+    def to_xml
+        return @node.to_s
+    end
+
+    def to_s
+        return @node.to_s
+    end
+
+    def addSpeak(body, attributes={})
+        return add(Speak.new(body, attributes))
+    end
+
+    def addPlay(body, attributes={})
+        return add(Play.new(body, attributes))
+    end
+
+    def addGetDigits(attributes={})
+        return add(GetDigits.new(attributes))
+    end
+
+    def addRecord(attributes={})
+        return add(Record.new(attributes))
+    end
+
+    def addDial(attributes={})
+        return add(Dial.new(attributes))
+    end
+
+    def addNumber(body, attributes={})
+        return add(Number.new(body, attributes))
+    end
+
+    def addUser(body, attributes={})
+        return add(User.new(body, attributes))
+    end
+
+    def addRedirect(body, attributes={})
+        return add(Redirect.new(body, attributes))
+    end
+
+    def addWait(attributes={})
+        return add(Wait.new(attributes))
+    end
+
+    def addHangup(attributes={})
+        return add(Hangup.new(attributes))
+    end
+
+    def addPreAnswer(attributes={})
+        return add(PreAnswer.new(attributes))
+    end
+
+    def addConference(body, attributes={})
+        return add(Conference.new(body, attributes))
+    end
+
+    def addMessage(body, attributes={})
+        return add(Message.new(body, attributes))
+    end
+end
+
+
+class Response < Element
+    @nestables = ['Speak', 'Play', 'GetDigits', 'Record', 'Dial', 'Message',
+                 'Redirect', 'Wait', 'Hangup', 'PreAnswer', 'Conference']
+    @valid_attributes = []
+
+    def initialize()
+        super(nil, {})
+    end
+
+    def to_xml()
+        return '<?xml version="1.0" encoding="utf-8" ?>' + super()
+    end
+
+    def to_s()
+        return '<?xml version="1.0" encoding="utf-8" ?>' + super()
+    end
+end
+
+
+class Speak < Element
+    @nestables = []
+    @valid_attributes = ['voice', 'language', 'loop']
+
+    def initialize(body, attributes={})
+        if not body:
+            raise PlivoError, 'No text set for ' + @name
+        end
+        super(body, attributes)
+    end
+end
+
+
+class Play < Element
+    @nestables = []
+    @valid_attributes = ['loop']
+
+    def initialize(body, attributes={})
+        if not body:
+            raise PlivoError 'No url set for ' + @name
+        end
+        super(body, attributes)
+    end
+end
+
+
+class Wait < Element
+    @nestables = []
+    @valid_attributes = ['length']
+
+    def initialize(attributes={})
+        super(nil, attributes)
+    end
+end
+
+
+class Redirect < Element
+    @nestables = []
+    @valid_attributes = ['method']
+
+    def initialize(body, attributes={})
+        if not body
+            raise PlivoError 'No url set for ' + @name
+        end
+        super(body, attributes)
+    end
+end
+
+
+class Hangup < Element
+    @nestables = []
+    @valid_attributes = ['schedule', 'reason']
+
+    def initialize(attributes={})
+        super(nil, attributes)
+    end
+end
+
+
+class GetDigits < Element
+    @nestables = ['Speak', 'Play', 'Wait']
+    @valid_attributes = ['action', 'method', 'timeout', 'finishOnKey',
+                        'numDigits', 'retries', 'invalidDigitsSound',
+                        'validDigits', 'playBeep']
+
+    def initialize(attributes={})
+        super(nil, attributes)
+    end
+end
+
+
+class Number < Element
+    @nestables = []
+    @valid_attributes = ['sendDigits', 'sendOnPreanswer']
+
+    def initialize(body, attributes={})
+        if not body
+            raise PlivoError, 'No number set for ' + @name
+        end
+        super(body, attributes)
+    end
+end
+
+
+class User < Element
+    @nestables = []
+    @valid_attributes = ['sendDigits', 'sendOnPreanswer']
+
+    def initialize(body, attributes={})
+        if not body:
+            raise PlivoError, 'No user set for ' + @name
+        end
+        super(body, attributes)
+    end
+end
+
+
+class Dial < Element
+    @nestables = ['Number', 'User']
+    @valid_attributes = ['action','method','timeout','hangupOnStar',
+                         'timeLimit','callerId', 'callerName', 'confirmSound',
+                         'dialMusic', 'confirmKey', 'redirect',
+                         'callbackUrl', 'callbackMethod', 'digitsMatch']
+
+    def initialize(attributes={})
+        super(nil, attributes)
+    end
+end
+
+
+class Conference < Element
+    @nestables = []
+    @valid_attributes = ['muted','beep','startConferenceOnEnter',
+                         'endConferenceOnExit','waitSound','enterSound', 'exitSound',
+                         'timeLimit', 'hangupOnStar', 'maxMembers',
+                         'record', 'recordFileFormat', 'action', 'method', 'redirect',
+                         'digitsMatch', 'callbackUrl', 'callbackMethod',
+                         'stayAlone', 'floorEvent']
+
+    def initialize(body, attributes={})
+        if not body:
+            raise PlivoError, 'No conference name set for ' + @name
+        end
+        super(body, attributes)
+    end
+end
+
+
+class Record < Element
+    @nestables = []
+    @valid_attributes = ['action', 'method', 'timeout','finishOnKey',
+                         'maxLength', 'bothLegs', 'playBeep',
+                         'redirect', 'fileFormat']
+
+    def initialize(attributes={})
+        super(nil, attributes)
+    end
+end
+
+
+class PreAnswer < Element
+    @nestables = ['Play', 'Speak', 'GetDigits', 'Wait', 'Redirect']
+    @valid_attributes = []
+
+    def initialize(attributes={})
+        super(nil, attributes)
+    end
+end
+
+
+class Message < Element
+    @nestables = []
+    @valid_attributes = ['src', 'dst', 'type']
+
+    def initialize(body, attributes={})
+        if not body:
+            raise PlivoError, 'No text set for ' + @name
+        end
+        super(body, attributes)
+    end
+end
+
+
+#p = RestAPI.new('MAGWNTM3ZTK1M2YZMDYX', 'MThhNmRjZDFmY2I3MTg1NjAwODIxYWZiZWViNTQx',
+#                'http://testapi.plivo.com', 'v1')
+#require 'pp'
+#pp p.get_live_calls()
+#pp p.get_cdrs()
+
+#pp p.modify_account({"name" => "Cloud test account"})
+#pp p.get_account()
+
+
+#r = Response.new
+#s = r.addSpeak("hello world", {"voice" => "MAN"})
+#s = r.addPlay("http://toto.com/toto.mp3")
+#puts r.to_xml()
+
+
