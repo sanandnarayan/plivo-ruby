@@ -1,14 +1,14 @@
 #!/usr/bin/env ruby
 
-require 'plivocldhelper'
+require 'plivo'
 
 
 # This is the signature we expect for the key, url, and params below
 expected_sig = 'Ma7fvTryuU51vDGO2IT5/KhivpI='
 
-# Plivo AccountSid and AuthToken
-ACCOUNT_SID = 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-ACCOUNT_TOKEN = 'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY'
+# Plivo Account AUTH_ID and AUTH_TOKEN
+AUTH_ID = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+AUTH_TOKEN = 'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY'
 
 # ===========================================================================
 # 1. Validate a Plivo request
@@ -23,7 +23,7 @@ postvars = {}
 signature = "SSSSSSSSSSSSSSSSSSSSSSSSSSSS"
 
 # Create a new Utils Object
-utils = Plivo::Utils.new(ACCOUNT_SID, ACCOUNT_TOKEN);
+utils = Plivo::Utils.new(AUTH_ID, AUTH_TOKEN)
 
 # Check if the signature matches the expected signature
 result = utils.validateRequest(signature, url, postvars);

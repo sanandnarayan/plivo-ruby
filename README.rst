@@ -6,14 +6,13 @@ Description
 
 The Plivo Ruby helper simplifies the process of making REST calls and generating RESTXML.
 
-See `Plivo Documentation <http://www.plivo.org/docs/>`_ for more information.
+See `Plivo Documentation <http://www.plivo.com/docs/>`_ for more information.
 
 
-Installation
+GEM Installation
 ~~~~~~~~~~~~~
 
-**Gemcutter:**
-    $ sudo gem install plivohelper
+    $ sudo gem install plivo
 
 
 Manual Installation
@@ -22,7 +21,7 @@ Manual Installation
 To use the rake command to build the gem and
 
 **Download the source and run:**
-    $ sudo gem install /path/to/plivohelper/gem
+    $ sudo gem install /path/to/plivo/gem
 
 to finish the installation
 
@@ -31,18 +30,16 @@ Usage
 ~~~~~
 
 To use the Plivo helper library, As shown in example-call.rb,
-you will need to specify the ACCOUNT_ID and ACCOUNT_TOKEN, before you can make REST requests.
+you will need to specify the AUTH_ID and AUTH_TOKEN, before you can make REST requests.
 
-Before you run the examples, you should have Plivo Running along with FreeSWITCH Running and a user 1000 logged in.
-
-See `Plivo Documentation <http://www.plivo.org/docs/>`_ for more information.
+See `Plivo Documentation <http://www.plivo.com/docs/>`_ for more information.
 
 
 
 Files
 ~~~~~
 
-**lib/plivohelper.rb:** include this library in your code
+**lib/plivo.rb:** include this library in your code
 
 **examples/example-call.rb:** example usage of REST Call
 
@@ -57,13 +54,8 @@ Files
 **examples/example-utils.rb:** example usage of utilities
 
 
-Credits
--------
-
-Plivo Ruby Helper Library is derived from `Twilio Ruby Helper <https://github.com/twilio/twilio-ruby>`_
-
 
 License
 -------
 
-The Plivo Ruby Helper Library is distributed under the MIT License
+The Plivo Ruby Helper Library is distributed under the MPL 1.1 License

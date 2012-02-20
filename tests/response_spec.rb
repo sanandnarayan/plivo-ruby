@@ -1,4 +1,4 @@
-require '../lib/plivohelper.rb'
+require '../lib/plivo.rb'
 
 module PlivoExampleHelperMethods
 
@@ -426,12 +426,12 @@ describe Plivo::Utils do
     expected_sig = 'Ma7fvTryuU51vDGO2IT5/KhivpI='
 
     # this is the secret key for your account
-    AuthToken = 'a1b2c3d4'
-    utils = Plivo::Utils.new("34", AuthToken);
-    # this is the url that twilio requested
-    url = 'http://yourserver.com/twilio/index.php?id=12345&encodedtext=hello+world'
+    auth_token = 'a1b2c3d4'
+    utils = Plivo::Utils.new("34", auth_token);
+    # this is the url that plivo requested
+    url = 'http://yourserver.com/plivo/index.php?id=12345&encodedtext=hello+world'
 
-    # these are the post params twilio sent in its request
+    # these are the post params plivo sent in its request
     params = Hash.new
     params['second_post_param'] = 'world'
     params['first_post_param'] = 'hello'

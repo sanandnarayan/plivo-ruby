@@ -1,15 +1,16 @@
-require 'plivocldhelper'
+require 'plivo'
 
-# Sid and AuthToken
-SID = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+# Plivo Account AUTH_ID and AUTH_TOKEN
+AUTH_ID = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
 AUTH_TOKEN = 'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY'
 
+
 # Create a REST object
-plivo = Plivo::Rest.new(SID, AUTH_TOKEN)
+plivo = Plivo::Rest.new(AUTH_ID, AUTH_TOKEN)
 
 # Transfer a call using a HTTP POST
 transfer_call_params = {
-    'Url' => "http://127.0.0.1:5000/transfered/",
+    'Url' => "http://www.example.com/transfered/",
     'CallUUID' => 'edaa59e1-79e0-41de-b016-f7a7570f6e9c', # Request UUID to hangup call
 }
 

@@ -1,12 +1,12 @@
-require 'plivocldhelper'
+require 'plivo'
 
-
-# Sid and AuthToken
-SID = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+# Plivo Account AUTH_ID and AUTH_TOKEN
+AUTH_ID = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
 AUTH_TOKEN = 'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY'
 
+
 # Create a REST object
-plivo = Plivo::Rest.new(SID, AUTH_TOKEN)
+plivo = Plivo::Rest.new(AUTH_ID, AUTH_TOKEN)
 
 # Hangup a call using a HTTP POST
 hangup_call_params = {

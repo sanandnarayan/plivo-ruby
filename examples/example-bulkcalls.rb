@@ -1,11 +1,13 @@
-require 'plivocldhelper'
+#!/usr/bin/env ruby
 
-# Sid and AuthToken
-SID = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+require 'plivo'
+
+# Plivo Account AUTH_ID and AUTH_TOKEN
+AUTH_ID = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
 AUTH_TOKEN = 'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY'
 
 # Create a REST object
-plivo = Plivo::Rest.new(SID, AUTH_TOKEN)
+plivo = Plivo::Rest.new(AUTH_ID, AUTH_TOKEN)
 
 
 # Initiate a new outbound call to user/1000 using a HTTP POST
@@ -14,9 +16,9 @@ call_params = {
     'Delimiter' => '>', # Delimter for the bulk list
     'From'=> '919191919191', # Caller Id
     'To' => '1000>1000', # User Numbers to Call separated by delimeter
-    'AnswerUrl' => "http://127.0.0.1:5000/answered/",
-    'HangupUrl' => "http://127.0.0.1:5000/hangup/",
-    'RingUrl' => "http://127.0.0.1:5000/ringing/",
+    'AnswerUrl' => "http://www.example.com/answered/",
+    'HangupUrl' => "http://www.example.com/hangup/",
+    'RingUrl' => "http://www.example.com/ringing/",
 #    'TimeLimit' => '10>30',
 #    'HangupOnRing' => "0>0",
 }
