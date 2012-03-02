@@ -104,17 +104,17 @@ class RestAPI
     end
 
     def get_application(params={})
-        app_id = self.params.delete("app_id")
+        app_id = params.delete("app_id")
         return request('GET', '/Application/#{app_id}/')
     end
 
     def modify_application(params={})
-        app_id = self.params.delete("app_id")
+        app_id = params.delete("app_id")
         return request('POST', '/Application/#{app_id}/', params)
     end
 
     def delete_application(params={})
-        app_id = self.params.delete("app_id")
+        app_id = params.delete("app_id")
         return request('DELETE', '/Application/#{app_id}/')
     end
 
@@ -125,7 +125,7 @@ class RestAPI
 
     def get_subaccount_application(params={})
         subauth_id = params.delete("subauth_id")
-        app_id = self.params.delete("app_id")
+        app_id = params.delete("app_id")
         return request('GET', '/Subaccount/#{subauth_id}/Application/#{app_id}/')
     end
 
@@ -136,13 +136,13 @@ class RestAPI
 
     def modify_subaccount_application(params={})
         subauth_id = params.delete("subauth_id")
-        app_id = self.params.delete("app_id")
+        app_id = params.delete("app_id")
         return request('POST', '/Subaccount/#{subauth_id}/Application/#{app_id}/', params)
     end
 
     def delete_subaccount_application(params={})
         subauth_id = params.delete("subauth_id")
-        app_id = self.params.delete("app_id")
+        app_id = params.delete("app_id")
         return request('DELETE', '/Subaccount/#{subauth_id}/Application/#{app_id}/')
     end
 
@@ -156,18 +156,18 @@ class RestAPI
     end
 
     def get_number(params={})
-        number = self.params.delete("number")
+        number = params.delete("number")
         return request('GET', '/Number/#{number}/')
     end
 
     def rent_number(params={})
-        number = self.params.delete("number")
+        number = params.delete("number")
         return request('POST', '/AvailableNumber/#{number}/')
     end
 
     def unrent_number(params={})
-        number = self.params.delete("number")
-        return request('DELETE', '/AvailableNumber/#{number}/')
+        number = params.delete("number")
+        return request('DELETE', '/Number/#{number}/')
     end
 
     def get_subaccount_numbers(params={})
@@ -177,7 +177,7 @@ class RestAPI
 
     def get_subaccount_number(params={})
         subauth_id = params.delete("subauth_id")
-        number = self.params.delete("number")
+        number = params.delete("number")
         return request('GET', '/Subaccount/#{subauth_id}/Number/#{number}/')
     end
 
