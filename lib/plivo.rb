@@ -152,7 +152,7 @@ class RestAPI
     end
 
     def search_numbers(params={})
-        return request('GET', '/Number/Search/', params)
+        return request('GET', '/AvailableNumber/', params)
     end
 
     def get_number(params={})
@@ -162,12 +162,12 @@ class RestAPI
 
     def rent_number(params={})
         number = self.params.delete("number")
-        return request('POST', '/Number/Action/#{number}/')
+        return request('POST', '/AvailableNumber/#{number}/')
     end
 
     def unrent_number(params={})
         number = self.params.delete("number")
-        return request('DELETE', '/Number/Action/#{number}/')
+        return request('DELETE', '/AvailableNumber/#{number}/')
     end
 
     def get_subaccount_numbers(params={})
