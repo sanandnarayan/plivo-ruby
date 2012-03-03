@@ -170,6 +170,17 @@ class RestAPI
         return request('DELETE', '/Number/#{number}/')
     end
 
+    def link_application_number(params={})
+        number = params.delete("number")
+        return request('POST', '/Number/#{number}/', params)
+    end
+
+    def unlink_application_number(params={})
+        number = params.delete("number")
+        params = {"app_id" => ""}
+        return request('POST', '/Number/#{number}/', params)
+    end
+
     def get_subaccount_numbers(params={})
         subauth_id = params.delete("subauth_id")
         return request('GET', '/Subaccount/#{subauth_id}/Number/', params)
