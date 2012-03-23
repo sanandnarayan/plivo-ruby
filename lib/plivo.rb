@@ -634,7 +634,7 @@ class Speak < Element
     @valid_attributes = ['voice', 'language', 'loop']
 
     def initialize(body, attributes={})
-        if not body:
+        if not body
             raise PlivoError, 'No text set for ' + @name
         end
         super(body, attributes)
@@ -647,7 +647,7 @@ class Play < Element
     @valid_attributes = ['loop']
 
     def initialize(body, attributes={})
-        if not body:
+        if not body
             raise PlivoError 'No url set for ' + @name
         end
         super(body, attributes)
@@ -718,7 +718,7 @@ class User < Element
     @valid_attributes = ['sendDigits', 'sendOnPreanswer']
 
     def initialize(body, attributes={})
-        if not body:
+        if not body
             raise PlivoError, 'No user set for ' + @name
         end
         super(body, attributes)
@@ -749,7 +749,7 @@ class Conference < Element
                          'stayAlone', 'floorEvent']
 
     def initialize(body, attributes={})
-        if not body:
+        if not body
             raise PlivoError, 'No conference name set for ' + @name
         end
         super(body, attributes)
@@ -784,7 +784,7 @@ class Message < Element
     @valid_attributes = ['src', 'dst', 'type']
 
     def initialize(body, attributes={})
-        if not body:
+        if not body
             raise PlivoError, 'No text set for ' + @name
         end
         super(body, attributes)
@@ -806,5 +806,3 @@ end
 #s = r.addSpeak("hello world", {"voice" => "MAN"})
 #s = r.addPlay("http://toto.com/toto.mp3")
 #puts r.to_xml()
-
-
