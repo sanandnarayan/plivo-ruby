@@ -13,7 +13,7 @@ end
 class RestAPI
     attr_accessor :auth_id, :auth_token, :url, :version, :api, :headers, :rest
 
-    def initialize(auth_id, auth_token, url="http://api.plivo.com", version="v1")
+    def initialize(auth_id, auth_token, url="https://api.plivo.com", version="v1")
         @auth_id = auth_id
         @auth_token = auth_token
         @url = url.chomp('/')
@@ -792,17 +792,3 @@ class Message < Element
 end
 
 
-#p = RestAPI.new('MAGWNTM3ZTK1M2YZMDYX', 'MThhNmRjZDFmY2I3MTg1NjAwODIxYWZiZWViNTQx',
-#                'http://testapi.plivo.com', 'v1')
-#require 'pp'
-#pp p.get_live_calls()
-#pp p.get_cdrs()
-
-#pp p.modify_account({"name" => "Cloud test account"})
-#pp p.get_account()
-
-
-#r = Response.new
-#s = r.addSpeak("hello world", {"voice" => "MAN"})
-#s = r.addPlay("http://toto.com/toto.mp3")
-#puts r.to_xml()
