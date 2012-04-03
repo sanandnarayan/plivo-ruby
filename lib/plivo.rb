@@ -13,7 +13,7 @@ end
 class RestAPI
     attr_accessor :auth_id, :auth_token, :url, :version, :api, :headers, :rest
 
-    def initialize(auth_id, auth_token, url="http://api.plivo.com", version="v1")
+    def initialize(auth_id, auth_token, url="https://api.plivo.com", version="v1")
         @auth_id = auth_id
         @auth_token = auth_token
         @url = url.chomp('/')
@@ -545,7 +545,7 @@ class Speak < Element
     @valid_attributes = ['voice', 'language', 'loop']
 
     def initialize(body, attributes={})
-        if not body:
+        if not body
             raise PlivoError, 'No text set for ' + @name
         end
         super(body, attributes)
@@ -558,7 +558,7 @@ class Play < Element
     @valid_attributes = ['loop']
 
     def initialize(body, attributes={})
-        if not body:
+        if not body
             raise PlivoError 'No url set for ' + @name
         end
         super(body, attributes)
@@ -629,7 +629,7 @@ class User < Element
     @valid_attributes = ['sendDigits', 'sendOnPreanswer']
 
     def initialize(body, attributes={})
-        if not body:
+        if not body
             raise PlivoError, 'No user set for ' + @name
         end
         super(body, attributes)
@@ -660,7 +660,7 @@ class Conference < Element
                          'stayAlone', 'floorEvent']
 
     def initialize(body, attributes={})
-        if not body:
+        if not body
             raise PlivoError, 'No conference name set for ' + @name
         end
         super(body, attributes)
@@ -695,27 +695,11 @@ class Message < Element
     @valid_attributes = ['src', 'dst', 'type']
 
     def initialize(body, attributes={})
-        if not body:
+        if not body
             raise PlivoError, 'No text set for ' + @name
         end
         super(body, attributes)
     end
 end
-
-
-#p = RestAPI.new('MAGWNTM3ZTK1M2YZMDYX', 'MThhNmRjZDFmY2I3MTg1NjAwODIxYWZiZWViNTQx',
-#                'http://testapi.plivo.com', 'v1')
-#require 'pp'
-#pp p.get_live_calls()
-#pp p.get_cdrs()
-
-#pp p.modify_account({"name" => "Cloud test account"})
-#pp p.get_account()
-
-
-#r = Response.new
-#s = r.addSpeak("hello world", {"voice" => "MAN"})
-#s = r.addPlay("http://toto.com/toto.mp3")
-#puts r.to_xml()
 
 

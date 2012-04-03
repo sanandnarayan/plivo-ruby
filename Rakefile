@@ -1,9 +1,9 @@
 require 'rubygems'
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 
 spec = Gem::Specification.new do |s|
   s.name = "plivo"
-  s.version = "0.1"
+  s.version = "0.2"
   s.author = "Plivo Inc"
   s.email = "support@plivo.com"
   s.homepage = "http://www.plivo.com"
@@ -18,7 +18,7 @@ spec = Gem::Specification.new do |s|
   s.add_dependency("builder", ">= 2.1.2")
 end
 
-Rake::GemPackageTask.new(spec) do |pkg|
+Gem::PackageTask.new(spec) do |pkg|
   pkg.need_tar = true
 end
 
