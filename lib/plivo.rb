@@ -118,34 +118,6 @@ class RestAPI
         return request('DELETE', '/Application/#{app_id}/')
     end
 
-    def get_subaccount_applications(params={})
-        subauth_id = params.delete("subauth_id")
-        return request('GET', '/Subaccount/#{subauth_id}/Application/')
-    end
-
-    def get_subaccount_application(params={})
-        subauth_id = params.delete("subauth_id")
-        app_id = params.delete("app_id")
-        return request('GET', '/Subaccount/#{subauth_id}/Application/#{app_id}/')
-    end
-
-    def create_subaccount_application(params={})
-        subauth_id = params.delete("subauth_id")
-        return request('POST', '/Subaccount/#{subauth_id}/Application/', params)
-    end
-
-    def modify_subaccount_application(params={})
-        subauth_id = params.delete("subauth_id")
-        app_id = params.delete("app_id")
-        return request('POST', '/Subaccount/#{subauth_id}/Application/#{app_id}/', params)
-    end
-
-    def delete_subaccount_application(params={})
-        subauth_id = params.delete("subauth_id")
-        app_id = params.delete("app_id")
-        return request('DELETE', '/Subaccount/#{subauth_id}/Application/#{app_id}/')
-    end
-
     ## Numbers ##
     def get_numbers(params={})
         return request('GET', '/Number/', params)
@@ -179,17 +151,6 @@ class RestAPI
         number = params.delete("number")
         params = {"app_id" => ""}
         return request('POST', '/Number/#{number}/', params)
-    end
-
-    def get_subaccount_numbers(params={})
-        subauth_id = params.delete("subauth_id")
-        return request('GET', '/Subaccount/#{subauth_id}/Number/', params)
-    end
-
-    def get_subaccount_number(params={})
-        subauth_id = params.delete("subauth_id")
-        number = params.delete("number")
-        return request('GET', '/Subaccount/#{subauth_id}/Number/#{number}/')
     end
 
     ## Schedule ##
@@ -267,17 +228,6 @@ class RestAPI
     def send_digits(params={})
         call_uuid = params.delete('call_uuid')
         return request('POST', '/Call/#{call_uuid}/DTMF/', params)
-    end
-
-    def get_subaccount_cdrs(params={})
-        subauth_id = params.delete('subauth_id')
-        return request('GET', '/Subaccount/#{subauth_id}/Call/', params)
-    end
-
-    def get_subaccount_cdr(params={})
-        subauth_id = params.delete('subauth_id')
-        record_id = params.delete('record_id')
-        return request('GET', '/Subaccount/#{subauth_id}/Call/#{record_id}/')
     end
 
     ## Calls requests ##
@@ -379,17 +329,6 @@ class RestAPI
         return request('GET', '/Recording/#{recording_id}/')
     end
 
-    def get_subaccount_recordings(params={})
-        subauth_id = params.delete('subauth_id')
-        return request('GET', '/Subaccount/#{subauth_id}/Recording/')
-    end
-
-    def get_subaccount_recording(params={})
-        subauth_id = params.delete('subauth_id')
-        recording_id = params.delete('recording_id')
-        return request('GET', '/Subaccount/#{subauth_id}/Recording/#{recording_id}/')
-    end
-
     ## Endpoints ##
     def get_endpoints(params={})
         return request('GET', '/Endpoint/', params)
@@ -412,34 +351,6 @@ class RestAPI
     def delete_endpoint(params={})
         endpoint_id = params.delete('endpoint_id')
         return request('DELETE', '/Endpoint/#{endpoint_id}/')
-    end
-
-    def get_subaccount_endpoints(params={})
-        subauth_id = params.delete('subauth_id')
-        return request('GET', '/Subaccount/#{subauth_id}/Endpoint/')
-    end
-
-    def create_subaccount_endpoint(params={})
-        subauth_id = params.delete('subauth_id')
-        return request('POST', '/Subaccount/#{subauth_id}/Endpoint/', params)
-    end
-
-    def get_subaccount_endpoint(params={})
-        subauth_id = params.delete('subauth_id')
-        endpoint_id = params.delete('endpoint_id')
-        return request('GET', '/Subaccount/#{subauth_id}/Endpoint/#{endpoint_id}/')
-    end
-
-    def modify_subaccount_endpoint(params={})
-        subauth_id = params.delete('subauth_id')
-        endpoint_id = params.delete('endpoint_id')
-        return request('POST', '/Subaccount/#{subauth_id}/Endpoint/#{endpoint_id}/', params)
-    end
-
-    def delete_subaccount_endpoint(params={})
-        subauth_id = params.delete('subauth_id')
-        endpoint_id = params.delete('endpoint_id')
-        return request('DELETE', '/Subaccount/#{subauth_id}/Endpoint/#{endpoint_id}/')
     end
 
     ## Carriers ##
