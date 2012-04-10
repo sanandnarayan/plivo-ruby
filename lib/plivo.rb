@@ -681,7 +681,7 @@ end
 
 
 class PreAnswer < Element
-    @nestables = ['Play', 'Speak', 'GetDigits', 'Wait', 'Redirect']
+    @nestables = ['Play', 'Speak', 'GetDigits', 'Wait', 'Redirect', 'Message']
     @valid_attributes = []
 
     def initialize(attributes={})
@@ -692,7 +692,7 @@ end
 
 class Message < Element
     @nestables = []
-    @valid_attributes = ['src', 'dst', 'type']
+    @valid_attributes = ['src', 'dst', 'type', 'callbackUrl', 'callbackMethod']
 
     def initialize(body, attributes={})
         if not body
