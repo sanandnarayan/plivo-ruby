@@ -25,6 +25,11 @@ To use the rake command to build the gem and
 
 to finish the installation
 
+Requirements
+~~~~~~~~~~~~
+gem "rest-client", "~> 1.6.7"
+gem "json", "~> 1.6.6"
+
 
 Usage
 ~~~~~
