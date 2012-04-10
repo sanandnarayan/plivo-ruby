@@ -3,7 +3,7 @@ require 'rubygems/package_task'
 
 spec = Gem::Specification.new do |s|
   s.name = "plivo"
-  s.version = "0.2"
+  s.version = "0.2.1"
   s.author = "Plivo Inc"
   s.email = "support@plivo.com"
   s.homepage = "http://www.plivo.com"
@@ -16,6 +16,7 @@ spec = Gem::Specification.new do |s|
   s.has_rdoc = true
   s.extra_rdoc_files = ["README.rst"]
   s.add_dependency("builder", ">= 2.1.2")
+  s.add_dependency("rest-client", "~> 1.6.7")
 end
 
 Gem::PackageTask.new(spec) do |pkg|
